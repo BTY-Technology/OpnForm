@@ -6,21 +6,55 @@ services:
     volumes: &api-environment-volumes
       - opnform_storage:/usr/share/nginx/html/storage:rw
     environment: &api-env
-      APP_ENV: production
+      APP_NAME: ${APP_NAME:-OpnForm}
+      APP_ENV: ${APP_ENV:-production}
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-http://localhost}
+      SELF_HOSTED: ${SELF_HOSTED:-true}
+      LOG_CHANNEL: ${LOG_CHANNEL:-errorlog}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      FILESYSTEM_DRIVER: ${FILESYSTEM_DRIVER:-local}
+      LOCAL_FILESYSTEM_VISIBILITY: ${LOCAL_FILESYSTEM_VISIBILITY:-public}
+      CACHE_DRIVER: ${CACHE_DRIVER:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      MAIL_MAILER: ${MAIL_MAILER:-log}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-OpnForm}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+      AWS_BUCKET: ${AWS_BUCKET}
+      JWT_TTL: ${JWT_TTL:-1440}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_SKIP_IP_UA_VALIDATION: ${JWT_SKIP_IP_UA_VALIDATION:-true}
+      FRONT_API_SECRET: ${FRONT_API_SECRET}
+      OPEN_AI_API_KEY: ${OPEN_AI_API_KEY}
+      H_CAPTCHA_SITE_KEY: ${H_CAPTCHA_SITE_KEY}
+      H_CAPTCHA_SECRET_KEY: ${H_CAPTCHA_SECRET_KEY}
+      RE_CAPTCHA_SITE_KEY: ${RE_CAPTCHA_SITE_KEY}
+      RE_CAPTCHA_SECRET_KEY: ${RE_CAPTCHA_SECRET_KEY}
+      TELEGRAM_BOT_ID: ${TELEGRAM_BOT_ID}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      SHOW_OFFICIAL_TEMPLATES: ${SHOW_OFFICIAL_TEMPLATES:-true}
       # Database settings
-      DB_HOST: db
-      REDIS_HOST: redis
+      DB_HOST: ${DB_HOST:-db}
+      REDIS_HOST: ${REDIS_HOST:-redis}
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
       DB_PASSWORD: ${DB_PASSWORD:-forge}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
       # PHP Configuration
-      PHP_MEMORY_LIMIT: "1G"
-      PHP_MAX_EXECUTION_TIME: "600"
-      PHP_UPLOAD_MAX_FILESIZE: "64M"
-      PHP_POST_MAX_SIZE: "64M"
-    env_file:
-      - ./api/.env
+      PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT:-1G}
+      PHP_MAX_EXECUTION_TIME: ${PHP_MAX_EXECUTION_TIME:-600}
+      PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE:-64M}
+      PHP_POST_MAX_SIZE: ${PHP_POST_MAX_SIZE:-64M}
     depends_on:
       db:
         condition: service_healthy
@@ -69,8 +103,15 @@ services:
   ui:
     image: jhumanj/opnform-client:latest
     container_name: opnform-client
-    env_file:
-      - ./client/.env
+    environment:
+      NUXT_API_SECRET: ${NUXT_API_SECRET}
+      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-/}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
+      NUXT_PRIVATE_API_BASE: ${NUXT_PRIVATE_API_BASE:-http://ingress/api}
+      NUXT_PUBLIC_ENV: ${NUXT_PUBLIC_ENV:-dev}
+      NUXT_PUBLIC_H_CAPTCHA_SITE_KEY: ${NUXT_PUBLIC_H_CAPTCHA_SITE_KEY}
+      NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY: ${NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY}
+      NUXT_PUBLIC_ROOT_REDIRECT_URL: ${NUXT_PUBLIC_ROOT_REDIRECT_URL}
     healthcheck:
       test:
         ["CMD-SHELL", "wget --spider -q http://localhost:3000/login || exit 1"]
