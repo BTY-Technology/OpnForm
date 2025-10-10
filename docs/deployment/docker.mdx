@@ -46,6 +46,29 @@ import CloudVersion from "/snippets/cloud-version.mdx";
 
 3. Access your OpnForm instance at `http://localhost`
 
+### Running via Docker wrapper image
+
+If you prefer to execute the setup from within a container that already has
+Docker installed, build the wrapper image included in this repository and run
+it with access to the host Docker socket:
+
+```bash
+docker build -t opnform/setup -f Dockerfile.setup .
+docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    opnform/setup
+```
+
+The container uses `scripts/docker-setup.sh` as its entrypoint, so any
+arguments you pass to `docker run` after the image name are forwarded to the
+script. For example, to run the development stack, use:
+
+```bash
+docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    opnform/setup --dev
+```
+
 ### Initial Setup
 
 After deployment, OpnForm will automatically redirect you to a setup page where you can create your admin account. Simply visit `http://localhost` and you'll be guided through the setup process.
