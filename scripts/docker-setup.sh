@@ -74,5 +74,5 @@ if [ "$DEV_MODE" = true ]; then
 else
     echo -e "${BLUE}Production environment setup complete!${NC}"
     echo -e "${YELLOW}Please wait a moment for all services to start${NC}"
-    echo -e "${GREEN}Then visit: http://localhost${NC}"
+    echo -e "${GREEN}Then visit: http://localhost:8080${NC}"
 fi
