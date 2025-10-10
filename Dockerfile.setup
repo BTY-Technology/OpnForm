@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+FROM docker:27-cli
+
+RUN apk add --no-cache bash
+
+WORKDIR /app
+
+COPY . /app
+
+RUN chmod +x scripts/docker-setup.sh
+
+ENTRYPOINT ["./scripts/docker-setup.sh"]
